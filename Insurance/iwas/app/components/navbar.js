@@ -2,6 +2,7 @@ import React from 'react';
 import { useSession } from 'next-auth/react';
 import Logout from '../logout';
 import {useEffect, useState} from "react"
+import Link from "next/link";
 
 const Navbar = ({ children }) => {
   const { data: session, status } = useSession();
@@ -23,11 +24,25 @@ const Navbar = ({ children }) => {
 
       {/* Wrap children within the navbar */}
       <div style={{ display: 'flex', alignItems: 'center' }}>
-        {React.Children.map(children, child => (
-          <div style={{ marginLeft: '20px', border: '1px solid #ccc', padding: '10px' }}>
-            {child}
-          </div>
-        ))}
+        
+         {user && <div style={{ marginLeft: '20px', border: '1px solid #ccc', padding: '10px' }}>
+          <Link className="px-10" href="/dashboard">
+              DASHBOARD
+              </Link>
+          </div>}
+          {!user && <div style={{ marginLeft: '20px', border: '1px solid #ccc', padding: '10px' }}>
+          <Link className="px-10" href="/register">
+              REGISTER
+            </Link>
+          </div>}
+          {!user && <div style={{ marginLeft: '20px', border: '1px solid #ccc', padding: '10px' }}>
+          <Link className="px-10" href="/login">
+              LOGIN
+            </Link>
+          </div>}
+          {user && <div style={{ marginLeft: '20px', border: '1px solid #ccc', padding: '10px' }}>
+          <Logout />
+          </div>}
       </div>
     </div>
   );

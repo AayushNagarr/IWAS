@@ -19,18 +19,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={inter.className}>
         <Providers>
-          <Navbar>
-            <Link className="px-10" href="/dashboard">
-              dashboard
-              </Link>
-            <Link className="px-10" href="/register">
-              REGISTER
-            </Link>
-            <Link className="px-10" href="/login">
-              LOGIN
-            </Link>
-            <Logout />
-          </Navbar>
+          <Navbar/>
           {children}
         </Providers>
       </body>

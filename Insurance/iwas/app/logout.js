@@ -3,9 +3,12 @@ import {signOut} from 'next-auth/react';
 export default function Logout(){
     return(
         <span className = "px-10" onClick = {() =>{
-            signOut();
+            signOut({
+                callbackUrl: '/api/auth/signin?callbackUrl=/login'
+            });
+            
         }}>
-            Logout
+            LOGOUT
         </span>
     )
 }

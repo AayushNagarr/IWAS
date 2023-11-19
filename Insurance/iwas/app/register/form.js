@@ -1,10 +1,11 @@
 'use client'
 import { useState } from 'react';
+import {useRouter} from 'next/navigation';
 
 export default function Form(){
     const [isAdmin, setIsAdmin] = useState(false);
 
-
+    const router = useRouter();
     const handleSubmit = async (e) =>
     {
         e.preventDefault();
@@ -17,6 +18,10 @@ export default function Form(){
                 isAdmin: isAdmin,
             }),
         });
+        if(response.ok){
+            router.push("/login");
+        }
+
         console.log({response});
 
     }
