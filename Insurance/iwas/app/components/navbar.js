@@ -1,17 +1,21 @@
 import React from 'react';
+import { useSession } from 'next-auth/react';
+import Logout from '../logout';
 
 const Navbar = ({ children }) => {
+  const { data: session, status } = useSession();
+
   return (
-    <div>
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'blue', padding: '10px', top: 0, left: 0, right: 0, zIndex: 1000, width: '100%' }}>
       {/* Your navbar content here */}
-      <nav style={{ background: 'lightblue', padding: '10px' }}>
-        <h1>My Navbar</h1>
+      <nav>
+        <h1>IWAS</h1>
       </nav>
 
       {/* Wrap children within the navbar */}
-      <div style={{ padding: '20px' }}>
+      <div style={{ display: 'flex', alignItems: 'center' }}>
         {React.Children.map(children, child => (
-          <div style={{ border: '1px solid #ccc', padding: '10px', marginBottom: '10px' }}>
+          <div style={{ marginLeft: '20px', border: '1px solid #ccc', padding: '10px' }}>
             {child}
           </div>
         ))}

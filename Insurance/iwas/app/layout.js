@@ -7,11 +7,11 @@ import { Inter } from "next/font/google";
 import Link from "next/link";
 import Logout from "./logout";
 const inter = Inter({ subsets: ["latin"] });
-import Navbar from "./components/navbar";
 import {useSession} from "next-auth/react"
 import {SessionProvider} from "next-auth/react"
 
 import Providers from "./components/provider";
+import Navbar from "./components/navbar";
 
 export default function RootLayout({ children }) {
   
@@ -19,7 +19,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={inter.className}>
         <Providers>
-          <nav className="bg-white border-2 text-black from-stone-700 to-green-600">
+          <Navbar>
             <Link className="px-10" href="/dashboard">
               dashboard
               </Link>
@@ -30,7 +30,7 @@ export default function RootLayout({ children }) {
               LOGIN
             </Link>
             <Logout />
-          </nav>
+          </Navbar>
           {children}
         </Providers>
       </body>
