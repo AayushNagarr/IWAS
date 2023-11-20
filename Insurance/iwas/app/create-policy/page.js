@@ -1,28 +1,29 @@
 // components/CreatePolicy.js
 'use client'
 import { useState, useEffect } from 'react';
-import {useSession} from "next-auth/react"
-const CreatePolicy = () => {
+import { useSession } from "next-auth/react";
 
-    const { data: session, status } = useSession();
+const CreatePolicy = () => {
+  const { data: session, status } = useSession();
 
   const [user, setUser] = useState(null);
   const [success, setSuccess] = useState(false);
+
   useEffect(() => {
     console.log(session);
-    if(session){
-      setUser(session.user)
+    if (session) {
+      setUser(session.user);
     }
   }, [session]);
 
-
   const [policyName, setPolicyName] = useState('');
-  // Add other state variables for policy details
+  const [policyType, setPolicyType] = useState('');
+  const [policyHolderName, setPolicyHolderName] = useState('');
+  const [coverageDetails, setCoverageDetails] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Add logic to submit policy data to the server
     const response = await fetch('/api/policies/createPolicy', {
       method: 'POST',
       headers: {
@@ -30,21 +31,20 @@ const CreatePolicy = () => {
       },
       body: JSON.stringify({
         userId: user.id,
-        policyName: policyName,
-        // Add other policy details here
+        policyName,
+        policyType,
+        policyHolderName,
+        coverageDetails,
       }),
     });
 
     if (response.ok) {
-      // Policy created successfully, you can redirect or show a success message
       console.log('Policy created successfully');
       setSuccess(true);
       setTimeout(() => {
         setSuccess(false);
       }, 5000);
-
     } else {
-      // Handle error, display error message, etc.
       console.error('Failed to create policy');
     }
   };
@@ -62,7 +62,32 @@ const CreatePolicy = () => {
             className="mt-1 p-2 text-black border rounded-md w-full"
           />
         </div>
-        {/* Add other form fields for policy details */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Policy Type:</label>
+          <input
+            type="text"
+            value={policyType}
+            onChange={(e) => setPolicyType(e.target.value)}
+            className="mt-1 p-2 text-black border rounded-md w-full"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Policy Holder Name:</label>
+          <input
+            type="text"
+            value={policyHolderName}
+            onChange={(e) => setPolicyHolderName(e.target.value)}
+            className="mt-1 p-2 text-black border rounded-md w-full"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Coverage Details:</label>
+          <textarea
+            value={coverageDetails}
+            onChange={(e) => setCoverageDetails(e.target.value)}
+            className="mt-1 p-2 text-black border rounded-md w-full"
+          />
+        </div>
         <button
           type="submit"
           className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300"

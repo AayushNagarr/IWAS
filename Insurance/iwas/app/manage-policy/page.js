@@ -5,18 +5,18 @@ import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
 
-
-
 const ManagePolicies = () => {
   const [policies, setPolicies] = useState([]);
   const [selectedPolicy, setSelectedPolicy] = useState(null);
   const [editedPolicyName, setEditedPolicyName] = useState('');
-  const [fetching, setFetching] = useState(false);
+  const [editedPolicyType, setEditedPolicyType] = useState('');
+  const [editedPolicyHolder, setEditedPolicyHolder] = useState('');
+  const [editedCoverageDetails, setEditedCoverageDetails] = useState('');
   const { data: session, status } = useSession();
 
   const [user, setUser] = useState(null);
   let pathname = usePathname();
-  pathname = pathname.substring(1,pathname.length);
+  pathname = pathname.substring(1, pathname.length);
   useEffect(() => {
     console.log(session);
     if(session){
@@ -33,14 +33,14 @@ const ManagePolicies = () => {
     try {
       console.log("in api call ", user.id)
       const response = await fetch('/api/policies/managePolicy', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      userId: user.id,
-    }),
-  });
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: user.id,
+        }),
+      });
 
       if (response.ok) {
         const data = await response.json();
@@ -53,25 +53,15 @@ const ManagePolicies = () => {
     }
   };
 
-  // Fetch policies when the component loads
-  // useEffect(() => {
-  //   fetchPolicies();
-  // }, [fetching]);
-
-
-// useEffect(() => {
-//     console.log("Fetching on change of state");
-//     fetchPolicies();
-//     }, [policies]);
-
   const handleEditClick = (policy) => {
     setSelectedPolicy(policy);
     setEditedPolicyName(policy.policy_name);
-    // Set other edited policy details as needed
+    setEditedPolicyType(policy.policy_type || '');
+    setEditedPolicyHolder(policy.policy_holder_name || '');
+    setEditedCoverageDetails(policy.coverage_details || '');
   };
 
   const handleUpdate = async () => {
-    // Add logic to update the policy on the server
     const response = await fetch(`/api/policies/editPolicy`, {
       method: 'PUT',
       headers: {
@@ -80,92 +70,40 @@ const ManagePolicies = () => {
       body: JSON.stringify({
         policyId: selectedPolicy.policy_id,
         policyName: editedPolicyName,
-        // Add other edited policy details here
+        policyType: editedPolicyType,
+        policyHolderName: editedPolicyHolder,
+        coverageDetails: editedCoverageDetails,
       }),
     });
 
     if (response.ok) {
-      // Policy updated successfully
       console.log('Policy updated successfully');
-      const updatedResponse = await fetch('/api/policies/managePolicy', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      userId: user.id,
-    }),
-  });
-  if (updatedResponse.ok) {
-    const updatedData = await updatedResponse.json();
-    setPolicies(updatedData);
-  } else {
-    console.error('Failed to fetch updated policies');
-  }
-      // You may want to refetch policies or update the state accordingly
+      fetchPolicies();
     } else {
-      // Handle error, display error message, etc.
       console.error('Failed to update policy');
     }
   };
 
-  const handleDelete = async () => {
-    // Add logic to update the policy on the server
-    const response = await fetch(`/api/policies/deletePolicy`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        policyId: selectedPolicy.policy_id,
-        
-        // Add other edited policy details here
-      }),
-    });
-
-    if (response.ok) {
-      // Policy updated successfully
-      console.log('Policy deleted successfully');
-      const updatedResponse = await fetch('/api/policies/managePolicy', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          userId: user.id,
-        }),
-      });
-      if (updatedResponse.ok) {
-        const updatedData = await updatedResponse.json();
-        setPolicies(updatedData);
-      } else {
-        console.error('Failed to fetch updated policies');
-      }
-      // You may want to refetch policies or update the state accordingly
-    } else {
-      // Handle error, display error message, etc.
-      console.error('Failed to delete policy');
-    }
-  };
-
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-4">Manage Policies</h1>
-      <ul className="list-disc pl-4">
-        {policies.map((policy) => (
-          <li key={policy.policy_id} className="mb-2">
-            {policy.policy_name}
+    <div className="container mx-auto p-4 grid grid-cols-3 gap-4">
+      {policies.map((policy) => (
+        <div key={policy.policy_id} className="bg-white text-black p-4 rounded-lg shadow-md">
+          <h3 className="text-lg font-semibold mb-2">{policy.policy_name}</h3>
+          <p><strong>Type:</strong> {policy.policy_type || 'N/A'}</p>
+          <p><strong>Holder:</strong> {policy.policy_holder_name || 'N/A'}</p>
+          <p><strong>Coverage:</strong> {policy.coverage_details || 'N/A'}</p>
+          <div className="mt-2 space-x-2">
             <button
-              className="ml-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded"
+              className="bg-blue-500 text-white py-1 px-2 rounded-md hover:bg-blue-600 transition duration-300"
               onClick={() => handleEditClick(policy)}
             >
               Edit
             </button>
-          </li>
-        ))}
-      </ul>
+          </div>
+        </div>
+      ))}
       {selectedPolicy && (
-        <div className="mt-4">
+        <div className="col-span-3 mt-4">
           <h2 className="text-2xl font-bold mb-2">Edit Policy</h2>
           <label className="block mb-2">
             Policy Name:
@@ -176,18 +114,37 @@ const ManagePolicies = () => {
               onChange={(e) => setEditedPolicyName(e.target.value)}
             />
           </label>
-          {/* Add other form fields for edited policy details */}
+          <label className="block mb-2">
+            Policy Type:
+            <input
+              className="border border-gray-300 text-black rounded py-1 px-2 w-full"
+              type="text"
+              value={editedPolicyType}
+              onChange={(e) => setEditedPolicyType(e.target.value)}
+            />
+          </label>
+          <label className="block mb-2">
+            Policy Holder Name:
+            <input
+              className="border border-gray-300 text-black rounded py-1 px-2 w-full"
+              type="text"
+              value={editedPolicyHolder}
+              onChange={(e) => setEditedPolicyHolder(e.target.value)}
+            />
+          </label>
+          <label className="block mb-2">
+            Coverage Details:
+            <textarea
+              className="border border-gray-300 text-black rounded py-1 px-2 w-full"
+              value={editedCoverageDetails}
+              onChange={(e) => setEditedCoverageDetails(e.target.value)}
+            ></textarea>
+          </label>
           <button
             className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded"
             onClick={handleUpdate}
           >
             Update Policy
-          </button>
-          <button
-            className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded"
-            onClick={handleDelete}
-          >
-            Delete Policy
           </button>
         </div>
       )}
