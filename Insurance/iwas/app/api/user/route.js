@@ -11,7 +11,7 @@ export async function POST(request) {
     const client = await pool.connect();
 
     // Query to get user information by username
-    const query = 'SELECT password FROM users WHERE username = $1';
+    const query = 'SELECT id, password FROM users WHERE username = $1';
     const values = [UserID];
     const result = await client.query(query, values);
     console.log(result.rows[0].password);
@@ -19,8 +19,9 @@ export async function POST(request) {
     // Check if the user exists
     if (result.rows.length > 0) {
       const user = result.rows[0];
-      // Return the user data excluding sensitive information (e.g., password)
+      // Return the user data including id and excluding sensitive information (e.g., password)
       return NextResponse.json({
+        id: user.id,
         username: UserID,
         password: user.password,
         // Add other user properties you want to include
