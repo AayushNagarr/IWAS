@@ -3,6 +3,8 @@
 
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
+import { usePathname } from 'next/navigation';
+
 
 
 const ManagePolicies = () => {
@@ -13,13 +15,19 @@ const ManagePolicies = () => {
   const { data: session, status } = useSession();
 
   const [user, setUser] = useState(null);
+  let pathname = usePathname();
+  pathname = pathname.substring(1,pathname.length);
   useEffect(() => {
     console.log(session);
     if(session){
       setUser(session.user)
-      setFetching(true);
     }
   }, [session]);
+
+  useEffect(() => {
+    console.log("Fetching on change of state");
+    fetchPolicies();
+  }, [user]);
 
   const fetchPolicies = async () => {
     try {
@@ -31,13 +39,11 @@ const ManagePolicies = () => {
     },
     body: JSON.stringify({
       userId: user.id,
-      // Add other policy details here
     }),
-  }); // Adjust the API route accordingly
+  });
 
       if (response.ok) {
         const data = await response.json();
-        console.log("This is the data result",data);
         setPolicies(data);
       } else {
         console.error('Failed to fetch policies');
@@ -48,16 +54,15 @@ const ManagePolicies = () => {
   };
 
   // Fetch policies when the component loads
-  useEffect(() => {
-    console.log("FETCHING ON MANAGE");
-    fetchPolicies();
-  }, [fetching]);
+  // useEffect(() => {
+  //   fetchPolicies();
+  // }, [fetching]);
 
 
-useEffect(() => {
-    console.log("Fetching on change of state");
-    fetchPolicies();
-    }, [policies]);
+// useEffect(() => {
+//     console.log("Fetching on change of state");
+//     fetchPolicies();
+//     }, [policies]);
 
   const handleEditClick = (policy) => {
     setSelectedPolicy(policy);
@@ -82,6 +87,21 @@ useEffect(() => {
     if (response.ok) {
       // Policy updated successfully
       console.log('Policy updated successfully');
+      const updatedResponse = await fetch('/api/policies/managePolicy', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      userId: user.id,
+    }),
+  });
+  if (updatedResponse.ok) {
+    const updatedData = await updatedResponse.json();
+    setPolicies(updatedData);
+  } else {
+    console.error('Failed to fetch updated policies');
+  }
       // You may want to refetch policies or update the state accordingly
     } else {
       // Handle error, display error message, etc.
@@ -106,6 +126,21 @@ useEffect(() => {
     if (response.ok) {
       // Policy updated successfully
       console.log('Policy deleted successfully');
+      const updatedResponse = await fetch('/api/policies/managePolicy', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: user.id,
+        }),
+      });
+      if (updatedResponse.ok) {
+        const updatedData = await updatedResponse.json();
+        setPolicies(updatedData);
+      } else {
+        console.error('Failed to fetch updated policies');
+      }
       // You may want to refetch policies or update the state accordingly
     } else {
       // Handle error, display error message, etc.

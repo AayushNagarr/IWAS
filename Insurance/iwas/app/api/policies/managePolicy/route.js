@@ -4,7 +4,6 @@ import pool from '../../../../lib/db';
 export async function POST(request) {
     try {
       const { userId } = await request.json();
-      console.log({ userId });
       
       const client = await pool.connect();
       const insertQuery = `SELECT * FROM policies where policies.user_id = ${userId} ORDER BY policies.policy_id ASC;`;

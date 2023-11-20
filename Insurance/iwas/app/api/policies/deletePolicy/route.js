@@ -5,7 +5,6 @@ export async function POST(request) {
     try {
         console.log("In deletePolicy")
       const { policyId } = await request.json();
-      console.log("\n\n\n\n\n\n\n\n\n", {policyId });
       
       const client = await pool.connect();
       const insertQuery = `DELETE FROM policies WHERE policy_id = ${policyId} RETURNING *;`;
