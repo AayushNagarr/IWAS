@@ -43,13 +43,49 @@ const viewClaim = () => {
     }
   };
 
-  const handleApprove = (claimId) => {
+  const handleApprove = async (claimId) => {
     // Add logic to approve the claim
-    console.log(`Approving claim ${claimId}`);
+    console.log(`Approvingaaaa claim ${claimId}`);
+    const response = await fetch(`/api/claims/approveClaim`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        claimId: claimId,
+      }),
+    });
+
+    if (response.ok) {
+      console.log('Claim approved successfully');
+      fetchClaims();
+    } else {
+      console.error('Failed to approve policy');
+    }
+
+    console.log(`Approvingaaa claim ${claimId}`);
   };
 
-  const handleReject = (claimId) => {
+  const handleReject = async (claimId) => {
     // Add logic to reject the claim
+    console.log(`Rejecting claim ${claimId}`);
+    const response = await fetch(`/api/claims/rejectClaim`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        claimId: claimId,
+      }),
+    });
+
+    if (response.ok) {
+      console.log('Claim rejected successfully');
+      fetchClaims();
+    } else {
+      console.error('Failed to approve policy');
+    }
+
     console.log(`Rejecting claim ${claimId}`);
   };
 
@@ -64,6 +100,7 @@ const viewClaim = () => {
               <h2 className="text-xl text-black font-semibold mb-2">{claim.policy_name}</h2>
               <p className="text-gray-600 mb-4">{claim.cause_of_loss}</p>
               <p className="text-gray-600 mb-4">
+              <p className = "text-blue-500 text-sm">Status: {claim.claim_status}</p>
                 Estimated Damage Amount: ${claim.estimated_damage_amount}
               </p>
               <div className="flex justify-between">

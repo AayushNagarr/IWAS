@@ -20,10 +20,10 @@ export async function POST(request) {
     // else{
     //     console.log("Not an admin")
         const query = `
-      SELECT claims.claim_id, policies.policy_name, claims.cause_of_loss, claims.estimated_damage_amount
+      SELECT claims.claim_id, policies.policy_name, claims.cause_of_loss, claims.estimated_damage_amount, claims.claim_status
       FROM claims
       INNER JOIN policies ON claims.policy_id = policies.policy_id
-      WHERE claims.user_id = $1;
+      WHERE claims.user_id = $1 ORDER BY claims.claim_id ASC;
     `;
     // }
     const result = await client.query(query, [userId]);
