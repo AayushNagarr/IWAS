@@ -30,7 +30,7 @@ const SubmitClaim = () => {
   const fetchPolicies = async () => {
     try {
       console.log("in api call ", user.id);
-      const response = await fetch('/api/manageClaim', {
+      const response = await fetch('/api/claims/manageClaim', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -58,7 +58,7 @@ const SubmitClaim = () => {
     try {
       setSubmitting(true);
 
-      const response = await fetch('/api/submitClaim', {
+      const response = await fetch('/api/claims/submitClaim', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

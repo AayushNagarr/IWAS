@@ -41,6 +41,9 @@ const Dashboard = () => {
         <Link href="/file-claim" className="px-4 py-2 bg-blue-500 text-white rounded">
           File a Claim
         </Link>
+        <Link href="/view-claim" className="px-4 py-2 bg-blue-500 text-white rounded">
+          View Claims
+        </Link>
       </div>
     </div>
   );
