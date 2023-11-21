@@ -11,7 +11,7 @@ export async function POST(request) {
     const client = await pool.connect();
 
     // Query to get user information by username
-    const query = 'SELECT id, password FROM users WHERE username = $1';
+    const query = 'SELECT id, password, is_admin FROM users WHERE username = $1';
     const values = [UserID];
     const result = await client.query(query, values);
     console.log(result.rows[0].password);
@@ -24,6 +24,7 @@ export async function POST(request) {
         id: user.id,
         username: UserID,
         password: user.password,
+        isAdmin: user.is_admin,
         // Add other user properties you want to include
       }, { status: 200 });
     } else {

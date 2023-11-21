@@ -27,15 +27,17 @@ const Dashboard = () => {
   return (
     <div className="flex flex-col items-center justify-center h-screen">
       <h1 className="text-4xl font-bold mb-4">Welcome, {session.user.username}!</h1>
+      <h2 className="text-2xl mb-4">What would you like to do today?</h2>
+      <p className="text-xl mb-4">You are a {session.user.isAdmin ? 'policy manager' : 'client'}.</p>
 
       <div className="flex space-x-4">
         {/* Navigation links */}
-        <Link href="/create-policy" className="px-4 py-2 bg-blue-500 text-white rounded">
+        {session.user.isAdmin && <Link href="/create-policy" className="px-4 py-2 bg-blue-500 text-white rounded">
           Create Policy
-        </Link>
-        <Link href="/manage-policy" className="px-4 py-2 bg-blue-500 text-white rounded">
+        </Link>}
+        {session.user.isAdmin && <Link href="/manage-policy" className="px-4 py-2 bg-blue-500 text-white rounded">
           Manage Policies
-        </Link>
+        </Link>}
         <Link href="/file-claim" className="px-4 py-2 bg-blue-500 text-white rounded">
           File a Claim
         </Link>

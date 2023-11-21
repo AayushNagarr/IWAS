@@ -28,6 +28,7 @@ export const authOptions = {
 
         const data = await response.json();
         console.log("received username credential ", credentials.username);
+        console.log("Received admin field", data.isAdmin)
         console.log("THIS IS DATA FROM RESPONSE", data, "thiS IS our password", credentials.password);
 
         if (data.Error) {
@@ -39,8 +40,8 @@ export const authOptions = {
         console.log("MATCHHHHHHHHHHHHHHHHHHHHHH", isMatch);
 
         if (isMatch) {
-          const user = { id: data.id, username: credentials.username }
-          console.log("Next auth user", user.username);
+          const user = { id: data.id, username: credentials.username, isAdmin: data.isAdmin }
+          console.log("Next auth user", user.username, user.id, user.isAdmin);
           return user;
         } else {
           return null;
@@ -65,6 +66,7 @@ export const authOptions = {
       if (token.user) {
         session.user = token.user;
         session.user.id = token.user.id; // Set session id from user.id
+        session.user.isAdmin = token.user.isAdmin;
       }
       return session;
     },
