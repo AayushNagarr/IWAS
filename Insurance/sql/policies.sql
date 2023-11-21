@@ -8,3 +8,4 @@ CREATE TABLE policies (
   coverage_details TEXT,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+

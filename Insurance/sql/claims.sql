@@ -16,3 +16,4 @@ CREATE TABLE claims (
   estimated_damage_amount DECIMAL(10, 2),
   claim_status claim_status_enum DEFAULT 'Pending'
 );
+

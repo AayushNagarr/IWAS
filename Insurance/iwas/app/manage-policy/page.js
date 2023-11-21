@@ -12,6 +12,7 @@ const ManagePolicies = () => {
   const [editedPolicyType, setEditedPolicyType] = useState('');
   const [editedPolicyHolder, setEditedPolicyHolder] = useState('');
   const [editedCoverageDetails, setEditedCoverageDetails] = useState('');
+  const [deleteFail, setDeleteFail] = useState(false);
   const { data: session, status } = useSession();
 
   const [user, setUser] = useState(null);
@@ -28,6 +29,13 @@ const ManagePolicies = () => {
     console.log("Fetching on change of state");
     fetchPolicies();
   }, [user]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setDeleteFail(false);
+    }, 5000);
+  }, [deleteFail]);
+
 
   const fetchPolicies = async () => {
     try {
@@ -81,6 +89,26 @@ const ManagePolicies = () => {
       fetchPolicies();
     } else {
       console.error('Failed to update policy');
+    }
+  };
+
+  const handleDelete = async () => {
+    const response = await fetch(`/api/policies/deletePolicy`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        policyId: selectedPolicy.policy_id,
+      }),
+    });
+
+    if (response.ok) {
+      console.log('Policy updated successfully');
+      fetchPolicies();
+    } else {
+      console.error('Failed to update policy');
+      setDeleteFail(true);
     }
   };
 
@@ -141,11 +169,20 @@ const ManagePolicies = () => {
             ></textarea>
           </label>
           <button
-            className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded"
+            className="bg-green-500 hover:bg-green-700 mx-10 text-white font-bold py-1 px-2 rounded"
             onClick={handleUpdate}
           >
             Update Policy
           </button>
+          <button
+            className="bg-red-500 hover:bg-red-700 mx-10 text-white font-bold py-1 px-2 rounded"
+            onClick={handleDelete}
+          >
+            Delete Policy
+          </button>
+          {deleteFail && <p className="text-lg text-red-500 mt-2">
+            Failed to delete : Claims are associated with this policy
+          </p>}
         </div>
       )}
     </div>
