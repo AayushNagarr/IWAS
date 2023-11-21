@@ -55,8 +55,8 @@ const viewClaim = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-4">Reject Claims</h1>
-
+      {user && user.isAdmin && <h1 className="text-3xl font-bold mb-4">Approve / Reject Claims Of Your Policy</h1>}
+      {user && !user.isAdmin && <h1 className="text-3xl font-bold mb-4">View Submitted Claims</h1>}
       {claims.length && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {claims.map((claim) => (
